@@ -39,21 +39,19 @@ export default function SyncManager({ session }: { session: any }) {
     setIsSyncing(true)
 
     try {
-      // 1. Sync Categories first (because transactions depend on them)
-      // Since local categories might not exist in remote yet, we should technically sync them.
-      // For MVP, we push all local categories to remote with upsert (if UUIDs match)
-      const userCategories = categories.filter(c => c.user_id === session.user.id)
-      if (userCategories.length > 0) {
-        await supabase.from('categories').upsert(
-          userCategories.map(c => ({
-            id: c.id,
-            user_id: c.user_id,
-            name: c.name,
-            type: c.type,
-            icon: c.icon,
-            is_system: c.is_system
-          }))
-        )
+      // 1. Sync Categories first
+      // Push all local categories to remote with upsert to ensure foreign keys exist
+      const categoriesToSync = categories.map(c => ({
+        id: c.id,
+        user_id: session.user.id,
+        name: c.name,
+        type: c.type,
+        icon: c.icon,
+        is_system: c.is_system
+      }))
+      
+      if (categoriesToSync.length > 0) {
+        await supabase.from('categories').upsert(categoriesToSync)
       }
 
       // 2. Sync Transactions

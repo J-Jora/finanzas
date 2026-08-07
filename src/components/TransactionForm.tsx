@@ -35,9 +35,15 @@ export default function TransactionForm() {
       category = { id: newCatId, name: categoryName, type, user_id: userId, is_system: false, created_at: new Date().toISOString() }
     }
 
+    let finalCategoryId = category?.id
+    if (!finalCategoryId) {
+      alert("Por favor ingresa una categoría válida")
+      return
+    }
+
     addTransaction({
       user_id: userId,
-      category_id: category?.id || 'unknown',
+      category_id: finalCategoryId,
       amount: Number(amount),
       date: new Date().toISOString(),
       description,
