@@ -19,6 +19,7 @@ export interface Transaction {
   description?: string | null;
   type: TransactionType;
   is_synced: boolean;
+  is_deleted?: boolean;
   created_at: string;
 }
 

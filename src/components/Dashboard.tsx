@@ -16,11 +16,13 @@ export default function Dashboard() {
 
   if (!mounted) return <div className="animate-pulse h-64 bg-white/5 rounded-xl mt-6 max-w-md mx-auto"></div>
 
-  const totalIncome = transactions
+  const activeTransactions = transactions.filter(t => !t.is_deleted)
+
+  const totalIncome = activeTransactions
     .filter(t => t.type === 'INCOME')
     .reduce((sum, t) => sum + t.amount, 0)
 
-  const totalExpense = transactions
+  const totalExpense = activeTransactions
     .filter(t => t.type === 'EXPENSE')
     .reduce((sum, t) => sum + t.amount, 0)
 
@@ -65,16 +67,15 @@ export default function Dashboard() {
       {/* Recent Transactions List */}
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-3">Movimientos Recientes</h3>
-        {transactions.length === 0 ? (
+        {activeTransactions.length === 0 ? (
           <p className="text-gray-500 text-sm text-center py-6 bg-white/5 rounded-xl border border-white/5">
             Aún no hay transacciones.
           </p>
         ) : (
           <div className="flex flex-col gap-2">
-            {transactions.slice(0, 5).map(tx => (
-              <div key={tx.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition">
+            {activeTransactions.slice(0, 5).map(tx => (
+              <div key={tx.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition group">
                 <div className="flex flex-col">
-                  {/* Category Name normally joined here, keeping description for MVP fallback */}
                   <span className="font-medium text-gray-200">
                     {tx.description || 'Sin descripción'}
                   </span>
@@ -82,9 +83,22 @@ export default function Dashboard() {
                     {new Date(tx.date).toLocaleDateString()}
                   </span>
                 </div>
-                <span className={`font-bold ${tx.type === 'INCOME' ? 'text-green-400' : 'text-red-400'}`}>
-                  {tx.type === 'INCOME' ? '+' : '-'} Bs. {tx.amount.toFixed(2)}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`font-bold ${tx.type === 'INCOME' ? 'text-green-400' : 'text-red-400'}`}>
+                    {tx.type === 'INCOME' ? '+' : '-'} Bs. {tx.amount.toFixed(2)}
+                  </span>
+                  <button 
+                    onClick={() => {
+                      if(window.confirm('¿Eliminar este registro?')) {
+                        useFinanceStore.getState().deleteTransaction(tx.id)
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-red-500/10 rounded-md"
+                    title="Eliminar"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
               </div>
             ))}
           </div>

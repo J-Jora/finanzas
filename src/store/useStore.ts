@@ -31,6 +31,7 @@ interface FinanceState {
   
   // Sync
   markAsSynced: (transactionIds: string[]) => void;
+  removeDeletedFromStore: (transactionIds: string[]) => void;
   setHydratedData: (categories: Category[], transactions: Transaction[]) => void;
 }
 
@@ -64,10 +65,27 @@ export const useFinanceStore = create<FinanceState>()(
       },
 
       deleteTransaction: (id) => {
-        // In offline-first, you might want a "deleted" flag rather than filtering,
-        // but for simplicity in MVP we remove it. A real offline sync would mark is_deleted = true
+        set((state) => {
+          const tx = state.transactions.find((t) => t.id === id)
+          if (!tx) return state
+          
+          if (!tx.is_synced) {
+            // Si nunca se subió a la nube, se borra directamente
+            return { transactions: state.transactions.filter((t) => t.id !== id) }
+          } else {
+            // Si ya estaba en la nube, la marcamos para borrado y des-sincronizamos
+            return {
+              transactions: state.transactions.map((t) =>
+                t.id === id ? { ...t, is_deleted: true, is_synced: false } : t
+              ),
+            }
+          }
+        })
+      },
+
+      removeDeletedFromStore: (transactionIds) => {
         set((state) => ({
-          transactions: state.transactions.filter((tx) => tx.id !== id),
+          transactions: state.transactions.filter((tx) => !transactionIds.includes(tx.id))
         }))
       },
 
