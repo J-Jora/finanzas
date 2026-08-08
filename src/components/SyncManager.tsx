@@ -6,9 +6,10 @@ import { useFinanceStore } from '@/store/useStore'
 import { CloudOff, Cloud, RefreshCw } from 'lucide-react'
 
 export default function SyncManager({ session }: { session: any }) {
-  const { transactions, categories, markAsSynced } = useFinanceStore()
+  const { transactions, categories, markAsSynced, setHydratedData } = useFinanceStore()
   const [isOnline, setIsOnline] = useState(true)
   const [isSyncing, setIsSyncing] = useState(false)
+  const [hasHydrated, setHasHydrated] = useState(false)
 
   const unsyncedTransactions = transactions.filter(t => !t.is_synced)
 
@@ -28,11 +29,45 @@ export default function SyncManager({ session }: { session: any }) {
   }, [])
 
   useEffect(() => {
+    if (session?.user?.id && !hasHydrated && isOnline) {
+      hydrateData()
+    }
+  }, [session?.user?.id, hasHydrated, isOnline])
+
+  const hydrateData = async () => {
+    if (!session?.user?.id) return
+    setIsSyncing(true)
+    try {
+      const { data: remoteCategories } = await supabase.from('categories').select('*').eq('user_id', session.user.id)
+      const { data: remoteTransactions } = await supabase.from('transactions').select('*').eq('user_id', session.user.id).order('date', { ascending: false })
+      
+      if (remoteCategories && remoteTransactions) {
+        // Merge strategy: Keep local unsynced, overwrite the rest with remote
+        const remoteTxIds = new Set(remoteTransactions.map(t => t.id))
+        const localUnsyncedTxs = transactions.filter(t => !t.is_synced && !remoteTxIds.has(t.id))
+        
+        const remoteCatIds = new Set(remoteCategories.map(c => c.id))
+        const localUnsyncedCats = categories.filter(c => !remoteCatIds.has(c.id))
+
+        setHydratedData(
+          [...remoteCategories, ...localUnsyncedCats],
+          [...(remoteTransactions.map(t => ({...t, is_synced: true}))), ...localUnsyncedTxs]
+        )
+      }
+      setHasHydrated(true)
+    } catch (err) {
+      console.error("Error al descargar datos:", err)
+    } finally {
+      setIsSyncing(false)
+    }
+  }
+
+  useEffect(() => {
     // Auto-sync when online and there are unsynced items
-    if (isOnline && unsyncedTransactions.length > 0 && !isSyncing && session?.user?.id) {
+    if (isOnline && unsyncedTransactions.length > 0 && !isSyncing && session?.user?.id && hasHydrated) {
       syncData()
     }
-  }, [isOnline, unsyncedTransactions.length, session])
+  }, [isOnline, unsyncedTransactions.length, session, hasHydrated, isSyncing])
 
   const syncData = async () => {
     if (unsyncedTransactions.length === 0 || !session?.user?.id) return

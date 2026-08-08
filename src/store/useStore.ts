@@ -31,6 +31,7 @@ interface FinanceState {
   
   // Sync
   markAsSynced: (transactionIds: string[]) => void;
+  setHydratedData: (categories: Category[], transactions: Transaction[]) => void;
 }
 
 export const useFinanceStore = create<FinanceState>()(
@@ -85,6 +86,10 @@ export const useFinanceStore = create<FinanceState>()(
             transactionIds.includes(tx.id) ? { ...tx, is_synced: true } : tx
           ),
         }))
+      },
+
+      setHydratedData: (categories, transactions) => {
+        set({ categories, transactions })
       }
     }),
     {
