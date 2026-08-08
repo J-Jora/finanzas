@@ -32,60 +32,62 @@ export default function Dashboard() {
     <div className="w-full max-w-md mx-auto mt-6 flex flex-col gap-4">
       
       {/* Main Balance Card */}
-      <Card className="bg-gradient-to-br from-indigo-600/90 to-purple-800/90 border-0 shadow-xl overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-white/80 text-sm font-normal flex items-center gap-2">
-            <Wallet size={16} /> Balance Total
+      <Card className="bg-brand-card border-0 shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+        <CardHeader className="pb-1">
+          <CardTitle className="text-brand-text-muted text-sm font-medium flex items-center gap-2 uppercase tracking-wider">
+            <Wallet size={16} /> Total Balance
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-4xl font-bold text-white tracking-tight">Bs. {balance.toFixed(2)}</p>
+          <p className="text-4xl font-bold text-brand-text tracking-tight mt-1">
+            <span className="text-brand-text-muted text-2xl font-normal">$</span> {balance.toFixed(2)}
+          </p>
         </CardContent>
       </Card>
 
       {/* Income / Expense split */}
       <div className="grid grid-cols-2 gap-4">
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-brand-card border-0 shadow-md hover:bg-brand-card-hover transition-colors">
           <CardContent className="p-4 flex flex-col gap-1">
-            <span className="text-sm text-gray-400 flex items-center gap-1">
-              <ArrowUpCircle size={14} className="text-green-400" /> Ingresos
+            <span className="text-xs text-brand-text-muted flex items-center gap-1 uppercase tracking-wide font-semibold">
+              <ArrowUpCircle size={14} className="text-brand-success" /> Income
             </span>
-            <span className="text-xl font-semibold text-green-400">Bs. {totalIncome.toFixed(2)}</span>
+            <span className="text-xl font-bold text-brand-success">${totalIncome.toFixed(2)}</span>
           </CardContent>
         </Card>
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-brand-card border-0 shadow-md hover:bg-brand-card-hover transition-colors">
           <CardContent className="p-4 flex flex-col gap-1">
-            <span className="text-sm text-gray-400 flex items-center gap-1">
-              <ArrowDownCircle size={14} className="text-red-400" /> Gastos
+            <span className="text-xs text-brand-text-muted flex items-center gap-1 uppercase tracking-wide font-semibold">
+              <ArrowDownCircle size={14} className="text-brand-danger" /> Spent
             </span>
-            <span className="text-xl font-semibold text-red-400">Bs. {totalExpense.toFixed(2)}</span>
+            <span className="text-xl font-bold text-brand-danger">${totalExpense.toFixed(2)}</span>
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Transactions List */}
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-3">Movimientos Recientes</h3>
+      <div className="mt-6">
+        <h3 className="text-lg font-bold text-brand-text mb-4">Recent Activity</h3>
         {activeTransactions.length === 0 ? (
-          <p className="text-gray-500 text-sm text-center py-6 bg-white/5 rounded-xl border border-white/5">
-            Aún no hay transacciones.
+          <p className="text-brand-text-muted text-sm text-center py-8 bg-brand-card rounded-2xl border-0 shadow-sm">
+            No transactions yet.
           </p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {activeTransactions.slice(0, 5).map(tx => (
-              <div key={tx.id} className="flex justify-between items-center p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition group">
+              <div key={tx.id} className="flex justify-between items-center p-4 bg-brand-card rounded-2xl shadow-sm hover:bg-brand-card-hover transition-colors group">
                 <div className="flex flex-col">
-                  <span className="font-medium text-gray-200">
+                  <span className="font-semibold text-brand-text text-base">
                     {tx.description || 'Sin descripción'}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-brand-text-muted font-medium mt-0.5">
                     {new Date(tx.date).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`font-bold ${tx.type === 'INCOME' ? 'text-green-400' : 'text-red-400'}`}>
-                    {tx.type === 'INCOME' ? '+' : '-'} Bs. {tx.amount.toFixed(2)}
+                  <span className={`font-bold text-lg ${tx.type === 'INCOME' ? 'text-brand-success' : 'text-brand-text'}`}>
+                    {tx.type === 'INCOME' ? '+' : '-'}${tx.amount.toFixed(2)}
                   </span>
                   <button 
                     onClick={() => {

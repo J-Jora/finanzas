@@ -56,70 +56,73 @@ export default function TransactionForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-4">
-      <CardHeader>
-        <CardTitle className="text-xl flex justify-between items-center">
-          <span>Nueva Transacción</span>
-          <div className="flex gap-2">
+    <Card className="w-full max-w-md mx-auto mt-6 bg-brand-card border-0 shadow-lg rounded-2xl overflow-hidden">
+      <CardHeader className="border-b border-brand-bg/50 pb-4">
+        <CardTitle className="text-xl flex justify-between items-center text-brand-text">
+          <span className="font-bold tracking-wide">Nueva Transacción</span>
+          <div className="flex gap-1 bg-brand-bg rounded-full p-1 border border-brand-card-hover">
             <button 
               type="button"
               onClick={() => setType('EXPENSE')}
-              className={`p-2 rounded-full transition-colors ${type === 'EXPENSE' ? 'bg-red-500/20 text-red-400' : 'text-gray-500 hover:bg-white/10'}`}
+              className={`p-2 rounded-full transition-all ${type === 'EXPENSE' ? 'bg-brand-danger text-white shadow-sm' : 'text-brand-text-muted hover:text-brand-text'}`}
             >
-              <MinusCircle size={24} />
+              <MinusCircle size={20} />
             </button>
             <button 
               type="button"
               onClick={() => setType('INCOME')}
-              className={`p-2 rounded-full transition-colors ${type === 'INCOME' ? 'bg-green-500/20 text-green-400' : 'text-gray-500 hover:bg-white/10'}`}
+              className={`p-2 rounded-full transition-all ${type === 'INCOME' ? 'bg-brand-success text-white shadow-sm' : 'text-brand-text-muted hover:text-brand-text'}`}
             >
-              <PlusCircle size={24} />
+              <PlusCircle size={20} />
             </button>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           
-          <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">Monto (Bs.)</label>
-            <input 
-              type="number" 
-              step="0.01"
-              required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="0.00"
-            />
+          <div className="relative">
+            <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-brand-text-muted">Monto</label>
+            <div className="relative flex items-center">
+              <span className="absolute left-4 text-brand-text-muted font-bold text-lg">Bs.</span>
+              <input 
+                type="number" 
+                step="0.01"
+                required
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full bg-brand-bg border border-transparent rounded-xl py-4 pl-12 pr-4 text-brand-text font-bold text-lg focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all"
+                placeholder="0.00"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">Categoría</label>
+            <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-brand-text-muted">Categoría</label>
             <input 
               type="text" 
               required
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Ej. Comida, Transporte, Sueldo..."
+              className="w-full bg-brand-bg border border-transparent rounded-xl p-4 text-brand-text focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all placeholder:text-brand-text-muted/50"
+              placeholder="Ej. Comida, Transporte..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">Descripción (Opcional)</label>
+            <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-brand-text-muted">Descripción</label>
             <input 
               type="text" 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Detalles de la transacción"
+              className="w-full bg-brand-bg border border-transparent rounded-xl p-4 text-brand-text focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent transition-all placeholder:text-brand-text-muted/50"
+              placeholder="Opcional"
             />
           </div>
 
           <button 
             type="submit" 
-            className={`w-full py-3 rounded-lg font-bold text-white transition-all hover:opacity-90 ${type === 'EXPENSE' ? 'bg-gradient-to-r from-red-600 to-orange-500' : 'bg-gradient-to-r from-green-600 to-emerald-500'}`}
+            className={`w-full py-4 mt-2 rounded-xl font-bold text-brand-bg text-lg transition-transform hover:scale-[1.02] active:scale-95 shadow-md ${type === 'EXPENSE' ? 'bg-brand-danger shadow-brand-danger/20' : 'bg-brand-accent shadow-brand-accent/20'}`}
           >
             Guardar {type === 'EXPENSE' ? 'Gasto' : 'Ingreso'}
           </button>

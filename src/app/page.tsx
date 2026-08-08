@@ -50,19 +50,19 @@ export default function Home() {
     <main className="flex-1 overflow-y-auto px-4 py-8 pb-24 max-w-lg mx-auto w-full">
       <SyncManager session={session} />
       
-      <header className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="bg-blue-500/20 p-2 rounded-xl">
-            <Activity className="text-blue-400" size={24} />
+      <header className="mb-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-brand-accent/10 p-2.5 rounded-xl border border-brand-accent/20 shadow-inner">
+            <Activity className="text-brand-accent" size={24} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Mis Finanzas</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-brand-text">FinTrack</h1>
         </div>
         <button 
           onClick={() => supabase.auth.signOut()}
-          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center justify-center border border-white/5 shadow-sm"
+          className="w-11 h-11 rounded-full bg-brand-card hover:bg-brand-card-hover transition-all flex items-center justify-center border border-transparent hover:border-brand-text-muted/20 shadow-sm active:scale-95"
           title="Cerrar sesión"
         >
-          <LogOut size={16} className="text-gray-300" />
+          <LogOut size={18} className="text-brand-text-muted hover:text-brand-text transition-colors" />
         </button>
       </header>
 

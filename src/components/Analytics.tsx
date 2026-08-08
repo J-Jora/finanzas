@@ -106,43 +106,44 @@ export default function Analytics() {
   }
 
   return (
-    <div className="flex flex-col gap-4 mt-6">
-      <Card className="bg-white/5 border-white/10">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp size={18} className="text-blue-400" /> Estimación de Riesgo
+    <div className="flex flex-col gap-6 mt-6">
+      <Card className="bg-brand-card border-0 shadow-md rounded-2xl overflow-hidden">
+        <CardHeader className="pb-3 border-b border-brand-bg/50">
+          <CardTitle className="text-lg flex items-center gap-2 text-brand-text font-bold tracking-wide">
+            <TrendingUp size={18} className="text-brand-accent" /> Estimación de Riesgo
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className={`p-4 rounded-lg border ${
-            riskAnalysis.status === 'learning' ? 'bg-gray-500/10 border-gray-500/20 text-gray-300' :
-            riskAnalysis.status === 'high' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-            riskAnalysis.status === 'good' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-            'bg-blue-500/10 border-blue-500/20 text-blue-400'
+        <CardContent className="pt-4">
+          <div className={`p-4 rounded-xl border ${
+            riskAnalysis.status === 'learning' ? 'bg-brand-bg border-brand-text-muted/20 text-brand-text-muted' :
+            riskAnalysis.status === 'high' ? 'bg-brand-danger/10 border-brand-danger/20 text-brand-danger' :
+            riskAnalysis.status === 'good' ? 'bg-brand-success/10 border-brand-success/20 text-brand-success' :
+            'bg-brand-accent/10 border-brand-accent/20 text-brand-accent'
           }`}>
-            <p className="text-sm font-medium">{riskAnalysis.msg}</p>
+            <p className="text-sm font-semibold">{riskAnalysis.msg}</p>
           </div>
         </CardContent>
       </Card>
 
       {suggestions.length > 0 && (
-        <Card className="bg-indigo-900/20 border-indigo-500/30">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center gap-2 text-indigo-300">
+        <Card className="bg-gradient-to-br from-[#1E2540] to-[#121626] border-0 shadow-md rounded-2xl overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+          <CardHeader className="pb-2 border-b border-white/5">
+            <CardTitle className="text-lg flex items-center gap-2 text-indigo-300 font-bold tracking-wide">
               <BrainCircuit size={18} /> Asistente Inteligente
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-300 mb-3">
+          <CardContent className="pt-4 relative z-10">
+            <p className="text-sm text-brand-text-muted mb-4 font-medium">
               He notado gastos recurrentes en la categoría "Otros". ¿Deseas convertirlos en categorías propias?
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {suggestions.map(s => (
-                <div key={s} className="flex justify-between items-center bg-black/20 p-3 rounded-lg border border-white/5">
-                  <span className="font-semibold capitalize text-indigo-200">"{s}"</span>
+                <div key={s} className="flex justify-between items-center bg-brand-bg/50 p-4 rounded-xl border border-indigo-500/10 shadow-sm">
+                  <span className="font-bold capitalize text-indigo-100">"{s}"</span>
                   <button 
                     onClick={() => handleCreateSuggestedCategory(s)}
-                    className="text-xs bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-md text-white font-bold transition"
+                    className="text-xs bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded-lg text-white font-bold transition-all shadow-sm shadow-indigo-500/20 active:scale-95"
                   >
                     Crear Categoría
                   </button>
